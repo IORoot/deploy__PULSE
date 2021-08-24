@@ -1,51 +1,68 @@
 [submodule "wp-content/plugins/wp-plugin__acf--codemirror"]
 	path = wp-content/plugins/wp-plugin__acf--codemirror
 	url = git@github.com:IORoot/wp-plugin__acf--codemirror.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__acf-options-import-export"]
 	path = wp-content/plugins/wp-plugin__acf-options-import-export
 	url = git@github.com:IORoot/wp-plugin__acf-options-import-export.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__acf--inline-datetime-field"]
 	path = wp-content/plugins/wp-plugin__acf--inline-datetime-field
 	url = git@github.com:IORoot/wp-plugin__acf--inline-datetime-field.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__oauth"]
 	path = wp-content/plugins/wp-plugin__oauth
 	url = git@github.com:IORoot/wp-plugin__oauth.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__admin--remove-comments"]
 	path = wp-content/plugins/wp-plugin__admin--remove-comments
 	url = git@github.com:IORoot/wp-plugin__admin--remove-comments.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__admin-themes"]
 	path = wp-content/plugins/wp-plugin__admin-themes
 	url = git@github.com:IORoot/wp-plugin__admin-themes.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__cpt--pulse"]
 	path = wp-content/plugins/wp-plugin__cpt--pulse
 	url = git@github.com:IORoot/wp-plugin__cpt--pulse.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-pluging__menu--code-inject"]
 	path = wp-content/plugins/wp-pluging__menu--code-inject
 	url = git@github.com:IORoot/wp-pluging__menu--code-inject.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__page-builder"]
 	path = wp-content/plugins/wp-plugin__page-builder
 	url = git@github.com:IORoot/wp-plugin__page-builder.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__page-builder--flickity"]
 	path = wp-content/plugins/wp-plugin__page-builder--flickity
 	url = git@github.com:IORoot/wp-plugin__page-builder--flickity.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__page-builder--rawcode"]
 	path = wp-content/plugins/wp-plugin__page-builder--rawcode
 	url = git@github.com:IORoot/wp-plugin__page-builder--rawcode.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__page-builder--yt-lite"]
 	path = wp-content/plugins/wp-plugin__page-builder--yt-lite
 	url = git@github.com:IORoot/wp-plugin__page-builder--yt-lite.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__api-scraper"]
 	path = wp-content/plugins/wp-plugin__api-scraper
 	url = git@github.com:IORoot/wp-plugin__api-scraper.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__ytdl"]
 	path = wp-content/plugins/wp-plugin__ytdl
 	url = git@github.com:IORoot/wp-plugin__ytdl.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__andyp-plugins"]
 	path = wp-content/plugins/wp-plugin__andyp-plugins
 	url = git@github.com:IORoot/wp-plugin__andyp-plugins.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__thumbnail-folders"]
 	path = wp-content/plugins/wp-plugin__thumbnail-folders
 	url = git@github.com:IORoot/wp-plugin__thumbnail-folders.git
+	ignore = dirty
 [submodule "wp-content/plugins/wp-plugin__footer"]
 	path = wp-content/plugins/wp-plugin__footer
 	url = git@github.com:IORoot/wp-plugin__footer.git
+	ignore = dirty
