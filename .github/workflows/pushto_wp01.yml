@@ -97,6 +97,7 @@ jobs:
             git stash
             git-crypt unlock ~/secrets/${{ env.server }}/gpg_key
             git stash pop
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e  "DROP USER IF EXISTS 'ldnpk${{ env.server }}'@'localhost';"
             mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e  "CREATE USER IF NOT EXISTS 'ldnpk${{ env.server }}'@'localhost' IDENTIFIED BY '${{secrets.MYSQL_PASSWORD}}';"
             mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e  "GRANT ALL on ${{ env.server }}_londonparkour_com.* to 'ldnpk${{ env.server }}'@'localhost';"
             mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e  "FLUSH PRIVILEGES;"
