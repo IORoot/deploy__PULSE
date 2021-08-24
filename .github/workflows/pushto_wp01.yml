@@ -1,0 +1,199 @@
+name: (LIVE) Push to WP01
+
+on:
+  workflow_dispatch:
+
+# ┌─────────────────────────────────────┐
+# │        ENVIRONMENT VARIABLES        │
+# └─────────────────────────────────────┘
+env:
+  server: pulse
+  ssh:    'root@138.68.159.70'
+  dest:   '/var/www/vhosts/pulse.londonparkour.com'     # no slash on the end
+  theme:  'wp-theme__pulse-londonparkour'
+  devdb:  'pulse_londonparkour_com'
+  dbfile: 'pulse_londonparkour_com.sql'
+
+  # ┌─────────────────────────────────────┐
+  # │          SECRETS REQUIRED           │
+  # └─────────────────────────────────────┘
+  #
+  # 1. {{secrets.DEPLOY_KEY}}
+  #    ssh key for server. ~/.ssh/id_github_ci
+  #
+  # 2. {{secrets.MYSQL_PASSWORD}} 
+  #    MySQL Password for ldnpk${{ env.server }} user.  
+  #    Generate secure password using keepass for this new user.
+  # 
+  # 3. {{secrets.MYSQL_ROOT_PASSWORD}} 
+  #    MySQL Password for root user.
+  #    Stored in Keepass.
+
+  
+jobs:
+
+  build:
+
+    name: Build and Deploy to Server
+    runs-on: ubuntu-latest
+
+    # RUN IF -nodeploy is NOT in commit message - Allows you to commit without running the actions.
+    # ---------------------------------------------------------
+    if: "!contains(github.event.head_commit.message, '-nodeploy')"
+    # ---------------------------------------------------------
+
+    steps:
+
+      # Checkout repo with submodules
+      # https://github.com/marketplace/actions/checkout-sub modules 
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+
+      # Install SHARP (sharp.pixelplumbing.com)
+      - name: Sharp.js WEBP Image Conversion
+        run: |
+          ls -la
+          npm install -g sharp-cli
+          cd ./wp-content/uploads
+          sharp --input **/*.png --output {dir}/{name}.webp --format "webp"
+          sharp --input **/*.jpg --output {dir}/{name}.webp --format "webp"
+
+
+      # Install Composer Packages in wp-plugin__ and wp-theme__ folders
+      - name: Composer Install
+        run: |
+          find . -path "*/wp-plugin*"  ! -path "*/vendor/*" ! -path "*/node_modules/*"  -name "composer.json"  -execdir composer install \;
+          find . -path "./wp-content/themes/wp-theme*"  ! -path "*/vendor/*" ! -path "*/node_modules/*"  -name "composer.json"  -execdir composer install \;
+
+
+      # Deploy repo to server
+      - name: Sync Repo to Server
+        run: |
+          echo "${{secrets.DEPLOY_KEY}}" > deploy_key
+          chmod 600 ./deploy_key
+          rsync -chav --delete\
+            -e 'ssh -i ./deploy_key -o StrictHostKeyChecking=no' \
+            --exclude /deploy_key \
+            --exclude /.github/ \
+            ./ ${{env.ssh}}:${{env.dest}}            
+
+  database:
+
+    name: Install Database
+    needs: build            
+    runs-on: ubuntu-latest
+    steps:
+
+      # Install Database
+      - name: Install Database
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            cd ${{env.dest}}
+            git stash
+            git-crypt unlock ~/secrets/${{ env.server }}/gpg_key
+            git stash pop
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e  "CREATE USER IF NOT EXISTS 'ldnpk${{ env.server }}'@'localhost' IDENTIFIED BY '${{secrets.MYSQL_PASSWORD}}';"
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e  "GRANT ALL on ${{ env.server }}_londonparkour_com.* to 'ldnpk${{ env.server }}'@'localhost';"
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e  "FLUSH PRIVILEGES;"
+            mysql -uldnpk${{ env.server }} -p${{secrets.MYSQL_PASSWORD}} -e "DROP DATABASE IF EXISTS ${{ env.server }}_londonparkour_com"
+            mysql -uldnpk${{ env.server }} -p${{secrets.MYSQL_PASSWORD}} -e "CREATE DATABASE ${{ env.server }}_londonparkour_com"
+            mysql -uldnpk${{ env.server }} -p${{secrets.MYSQL_PASSWORD}} -h localhost ${{ env.server }}_londonparkour_com < ${{env.dest}}/wp-content/database/${{ env.dbfile }}
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e "UPDATE wp_posts SET guid = replace(guid, '${{ env.devdb }}','${{ env.server }}.londonparkour');" ${{ env.server }}_londonparkour_com
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e "UPDATE wp_posts SET post_content = replace(post_content, '${{ env.devdb }}', '${{ env.server }}.londonparkour');" ${{ env.server }}_londonparkour_com
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e "UPDATE wp_postmeta SET meta_value = replace(meta_value, '${{ env.devdb }}', '${{ env.server }}.londonparkour');" ${{ env.server }}_londonparkour_com
+            mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} -e "UPDATE wp_options SET option_value = replace(option_value, '${{ env.devdb }}', '${{ env.server }}.londonparkour');" ${{ env.server }}_londonparkour_com     
+
+
+  wordpress:
+
+    name: Install Wordpress
+    needs: build           
+    runs-on: ubuntu-latest
+    steps:
+
+      # Clone wordpress fresh install
+      - name: Install Wordpress
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            cd ${{env.dest}}
+            curl -O https://wordpress.org/latest.tar.gz
+            tar --strip-components=1 -xzvf latest.tar.gz
+            rm latest.tar.gz
+
+
+  secrets:
+
+    name: Use REAL wp-config. 
+    needs: [build, wordpress]
+    runs-on: ubuntu-latest
+    steps:
+
+      # Copy secrets into plugins
+      - name: Copy Secrets
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            cp ${{env.dest}}/../${{env.server}}-config.php ${{env.dest}}/wp-config.php
+
+
+  chown:
+
+    name: Change Ownership
+    needs: [build, wordpress,secrets]
+    runs-on: ubuntu-latest
+    steps:
+
+      # Chown to www-data:www-data
+      - name: Chown 
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            chown -Rf www-data:www-data ${{env.dest}}
+
+  plugins:
+
+    name: Wordpress Plugins
+    needs: [build, wordpress, database, secrets, chown]
+    runs-on: ubuntu-latest
+    steps:
+
+      # Activate plugins
+      - name: Setup Plugins
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            cd ${{env.dest}}
+            sudo -u www-data wp plugin activate --all
+            sudo -u www-data wp plugin update --all
+            sudo -u www-data wp plugin delete hello akismet
+            sudo -u www-data wp theme delete twentynineteen twentytwenty twentytwentyone
+            sudo -u www-data wp eval 'flush_rewrite_rules();'
+
+  log:
+
+    name: Log complete
+    needs: plugins       
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Complete
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            echo "$(date), deploy complete from github action pusto_webproduction01.yml " >> /tmp/github-actions.log
