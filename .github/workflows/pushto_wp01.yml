@@ -9,7 +9,7 @@ on:
 env:
   server: pulse
   ssh:    'root@142.93.40.219'
-  dest:   '/var/www/vhosts/pulse.londonparkour.com'     # no slash on the end
+  dest:   '/var/www/vhosts/parkourpulse.com'     # no slash on the end
   theme:  'wp-theme__pulse-londonparkour'
   devdb:  'pulse_londonparkour_com'
   dbfile: 'pulse_londonparkour_com.sql'
