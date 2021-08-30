@@ -10,7 +10,7 @@ env:
   server: pulse
   ssh:    'root@142.93.40.219'
   dest:   '/var/www/vhosts/parkourpulse.com'     # no slash on the end
-  theme:  'wp-theme__pulse-londonparkour'
+  theme:  'wp-theme__londonparkour--v4'
   devdb:  'pulse_londonparkour_com'
   dbfile: 'pulse_londonparkour_com.sql'
 
@@ -202,6 +202,7 @@ jobs:
             sudo -u www-data wp plugin update --all
             sudo -u www-data wp plugin delete hello akismet
             sudo -u www-data wp theme delete twentynineteen twentytwenty twentytwentyone
+            sudo -u www-data wp theme activate ${{env.theme}}
             sudo -u www-data wp eval 'flush_rewrite_rules();'
 
   log:
