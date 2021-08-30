@@ -125,7 +125,7 @@ jobs:
 
   secrets:
 
-    name: Use REAL wp-config. 
+    name: Add secrets. 
     needs: [build, wordpress]
     runs-on: ubuntu-latest
     steps:
@@ -151,7 +151,7 @@ jobs:
   composer:
 
     name: Composer Install
-    needs: [build,wordpress,secrets]
+    needs: [build,wordpress]
     runs-on: ubuntu-latest
     steps:
 
@@ -186,7 +186,7 @@ jobs:
   plugins:
 
     name: Wordpress Plugins
-    needs: [build, wordpress, database, secrets, composer, chown]
+    needs: [chown]
     runs-on: ubuntu-latest
     steps:
 
