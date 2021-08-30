@@ -146,6 +146,15 @@ jobs:
           command: |
             cp ${{env.dest}}/../${{env.server}}-config.php ${{env.dest}}/wp-config.php
 
+      # Copy OAUTH Client Secret for the OAUTH plugin (https://github.com/IORoot/wp-plugin__oauth)
+      - name: Copy Client OAUTH Secrets
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            cp ~/secrets/${{ env.server }}/client_secret.json ${{env.dest}}/wp-content/plugins/wp-plugin__oauth/client_secret.json
+
 
   chown:
 
