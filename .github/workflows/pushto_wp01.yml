@@ -186,7 +186,7 @@ jobs:
   plugins:
 
     name: Wordpress Plugins
-    needs: [chown]
+    needs: [chown, database]
     runs-on: ubuntu-latest
     steps:
 
