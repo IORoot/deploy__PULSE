@@ -219,3 +219,23 @@ jobs:
           privateKey: ${{secrets.DEPLOY_KEY}}
           command: |
             echo "$(date), deploy complete from github action pusto_webproduction01.yml " >> /tmp/github-actions.log
+
+
+  cleanup:
+
+    name: Cleanup
+    needs: log       
+    runs-on: ubuntu-latest
+    steps:
+
+      # Delete .git directory
+      - name: Delete .git 
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ${{env.ssh}}
+          privateKey: ${{secrets.DEPLOY_KEY}}
+          command: |
+            rm -Rf ${{env.dest}}/.git
+            rm -Rf ${{env.dest}}/.git-crypt
+            rm -Rf ${{env.dest}}/.gitmodules
+            rm -Rf ${{env.dest}}/gitdeploy.sh
