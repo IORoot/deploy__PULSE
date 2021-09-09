@@ -66,9 +66,7 @@
 	path = wp-content/plugins/wp-plugin__footer
 	url = git@github.com:IORoot/wp-plugin__footer.git
 	ignore = dirty
-[submodule "wp-content/themes/wp-theme__londonparkour--v4"]
-	path = wp-content/themes/wp-theme__londonparkour--v4
-	url = git@github.com:IORoot/wp-theme__londonparkour--v4.git
 [submodule "wp-content/themes/wp-theme__pulse"]
 	path = wp-content/themes/wp-theme__pulse
 	url = git@github.com:IORoot/wp-theme__pulse.git
+	ignore = dirty
