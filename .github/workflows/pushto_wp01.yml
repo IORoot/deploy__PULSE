@@ -11,6 +11,7 @@ env:
   ssh:    'root@142.93.40.219'
   dest:   '/var/www/vhosts/parkourpulse.com'     # no slash on the end
   theme:  'wp-theme__londonparkour--v4'
+  branch: 'pulse'
   devdb:  'pulse_londonparkour_com'
   dbfile: 'pulse_londonparkour_com.sql'
 
@@ -121,6 +122,8 @@ jobs:
             curl -O https://wordpress.org/latest.tar.gz
             tar --strip-components=1 -xzvf latest.tar.gz
             rm latest.tar.gz
+            cd ${{env.dest}}/wp-content/themes/${{env.theme}}
+            git checkout ${{env.branch}}
 
 
   secrets:
@@ -221,21 +224,21 @@ jobs:
             echo "$(date), deploy complete from github action pusto_webproduction01.yml " >> /tmp/github-actions.log
 
 
-  cleanup:
+  # cleanup:
 
-    name: Cleanup
-    needs: log       
-    runs-on: ubuntu-latest
-    steps:
+  #   name: Cleanup
+  #   needs: log       
+  #   runs-on: ubuntu-latest
+  #   steps:
 
-      # Delete .git directory
-      - name: Delete .git 
-        uses: JimCronqvist/action-ssh@master
-        with:
-          hosts: ${{env.ssh}}
-          privateKey: ${{secrets.DEPLOY_KEY}}
-          command: |
-            rm -Rf ${{env.dest}}/.git
-            rm -Rf ${{env.dest}}/.git-crypt
-            rm -Rf ${{env.dest}}/.gitmodules
-            rm -Rf ${{env.dest}}/gitdeploy.sh
+  #     # Delete .git directory
+  #     - name: Delete .git 
+  #       uses: JimCronqvist/action-ssh@master
+  #       with:
+  #         hosts: ${{env.ssh}}
+  #         privateKey: ${{secrets.DEPLOY_KEY}}
+  #         command: |
+  #           rm -Rf ${{env.dest}}/.git
+  #           rm -Rf ${{env.dest}}/.git-crypt
+  #           rm -Rf ${{env.dest}}/.gitmodules
+  #           rm -Rf ${{env.dest}}/gitdeploy.sh
