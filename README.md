@@ -1,15 +1,16 @@
 
+
 <div id="top"></div>
 
 <div align="center">
 
 
-<img src="https://svg-rewriter.sachinraja.workers.dev/?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fnpm%2F%40mdi%2Fsvg%406.7.96%2Fsvg%2Fcloud-sync.svg&fill=%234ADE80&width=200px&height=200px" style="width:200px;"/>
+<img src="https://svg-rewriter.sachinraja.workers.dev/?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fnpm%2F%40mdi%2Fsvg%406.7.96%2Fsvg%2Fcloud-sync.svg&fill=%23F59E0B&width=200px&height=200px" style="width:200px;"/>
 
-<h3 align="center">Deploy ParkourLabs.com</h3>
+<h3 align="center">Deploy ParkourPulse.com</h3>
 
 <p align="center">
-Deploy ParkourLabs onto Production Server through Github Action.
+Deploy ParkourPulse onto Production Server through Github Action.
 </p>    
 </div>
 
@@ -62,6 +63,7 @@ Note, all secrets and database are git-crypted. The real `wp-config.php` file is
 
 ##  3. <a name='Usage'></a>Usage
 
+
 ###  3.1. <a name='DeployingProcess'></a>Deploying Process
 
 ####  3.1.1. <a name='DeploymenttoStagingServer'></a>Deployment to Staging Server
@@ -102,6 +104,8 @@ Then manually run the action.
 ```bash
 github > Actions > [LIVE] Create a release > Run Workflow
 ```
+
+
 
 
 ##  4. <a name='Customising'></a> Customising
@@ -170,6 +174,4 @@ Author Link: [https://github.com/IORoot](https://github.com/IORoot)
 
 ##  9. <a name='Changelog'></a>Changelog
 
-- v1.0.1 - Fixed GUID issue with the tree shortcode plugin. Also added gitdeploy.sh command.
-
-- v1.0.0 - Setup repo and initial release of LABS V2.0.0
+- v1.0.0 - Setup repo and initial release of PULSE V1.0.0 
